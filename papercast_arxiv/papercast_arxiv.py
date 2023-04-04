@@ -14,18 +14,16 @@ logging.basicConfig(level=logging.INFO)
 
 
 class ArxivCollector(BaseCollector):
-    def input_types(self) -> Dict[str, Any]:
-        return {"arxiv_id": str}
+    input_types = {"arxiv_id": str}
+    output_types = {
+        "pdf": PDFFile,
+        "title": str,
+        "arxiv_id": str,
+        "authors": list,
+        "doi": str,
+        "description": str,
+    }
 
-    def output_types(self) -> Dict[str, Any]:
-        return {
-            "pdf": PDFFile,
-            "title": str,
-            "arxiv_id": str,
-            "authors": list,
-            "doi": str,
-            "description": str,
-        }
 
     def __init__(self, pdf_dir: PathLike, json_dir: PathLike):
         self.pdf_dir = pdf_dir
@@ -61,12 +59,5 @@ class ArxivCollector(BaseCollector):
         doc["description"] = result.summary.replace("\n", " ")
 
         logging.info(f"Downloaded pdf to {pdf_path}")
-
-        # json_path = Path(self.json_dir) / pdf_path.split("/")[-1].replace(
-        #     ".pdf", ".json"
-        # )
-        # with open(json_path, "w") as f:
-        #     json.dump(doc, f)
-        # logging.info("Wrote json to {}".format(json_path))
 
         return pdf_path, None, doc
