@@ -1,1 +1,1 @@
-from .papercast_arxiv import ArxivCollector
+from .papercast_arxiv import ArxivProcessor

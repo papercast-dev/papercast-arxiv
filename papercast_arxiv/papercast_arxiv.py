@@ -8,12 +8,12 @@ from arxiv import Result
 
 from papercast.types import PathLike, PDFFile
 from papercast.production import Production
-from papercast.base import BaseCollector
+from papercast.base import BaseProcessor
 
 logging.basicConfig(level=logging.INFO)
 
 
-class ArxivCollector(BaseCollector):
+class ArxivProcessor(BaseProcessor):
     input_types = {"arxiv_id": str}
     output_types = {
         "pdf": PDFFile,
@@ -29,10 +29,9 @@ class ArxivCollector(BaseCollector):
         self.pdf_dir = pdf_dir
         self.json_dir = json_dir
 
-    def process(self, arxiv_id: str, **kwargs) -> Production:
-        pdf_path, json_path, doc = self._download_and_create_json_arxiv(arxiv_id)
+    def process(self, production: Production, **kwargs) -> Production:
+        pdf_path, json_path, doc = self._download_and_create_json_arxiv(production.arxiv_id) # type: ignore
         pdf = PDFFile(path=pdf_path)
-        production = Production()
         setattr(production, "pdf", pdf)
         for k, v in doc.items():
             setattr(production, k, v)
